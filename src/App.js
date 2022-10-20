@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
-function App() {
+// Component Imports
+import Header from "./components/Header/Header";
+import TodoForm from "./components/ToDoForm/ToDoForm";
+import TodoList from "./components/ToDoList/ToDoList";
+
+// Style Imports
+import "./App.css";
+
+const App = () => {
+  // state containing inputted value, our new todo
+  const [todo, setTodo] = useState("");
+  // state containing all of our todos
+  const [todos, setTodos] = useState([]);
+
+  const handleSubmit = (e) => {
+    // Prevent refreshing whenever we click on the Add button
+    e.preventDefault();
+
+    // Add new todo
+    if (todo !== "") {
+      const newTodo = {
+        id: `${todo}-${Date.now()}`,
+        task: todo,
+      };
+
+      setTodos([...todos, newTodo]);
+      setTodo("");
+    }
+  };
+
+  const handleDelete = (id) => {
+    const delTodo = todos.filter((todo) => todo.id !== id);
+    setTodos([...delTodo]);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <TodoForm handleSubmit={handleSubmit} todo={todo} setTodo={setTodo} />
+      <TodoList todos={todos} handleDelete={handleDelete} />
     </div>
   );
-}
+};
 
 export default App;
